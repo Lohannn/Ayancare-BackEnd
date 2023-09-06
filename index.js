@@ -10,6 +10,11 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const bodyParserJSON = bodyParser.json()
 
+const messages = require('./controller/modules/config.js')
+const controllerPaciente = require('./controller/controller_paciente.js');
+const { request } = require('express');
+const { response } = require('express');
+
 const app = express()
 
 app.use((request, response, next) => {
@@ -47,7 +52,67 @@ app.use((request, response, next) => {
          * Data: 04/09/2023
          * Versão: 1.0
          *************************************************************************************/
+         app.get('/v1/ayan/pacientes', cors(), async (request, response) => {
+            //Recebe os dados do controller
+            let dadosPaciente = await controllerPaciente.getPacientes();
 
+            //Valida se existe registro
+            response.json(dadosPaciente)
+            response.status(dadosPaciente.status)
+         })
+
+         app.post('/v1/ayan/paciente', cors(), bodyParserJSON, async (request, response) => {
+            let contentType = request.headers['content-type']
+
+            //Validação para receber dados apenas no formato JSON
+            if (String(contentType).toLowerCase() == 'application/json') {
+               let dadosBody = request.body
+               let resultDadosPaciente = await controllerPaciente.insertPaciente(dadosBody)
+
+               response.status(resultDadosPaciente.status)
+               response.json(resultDadosPaciente)
+            } else {
+               response.status(messages.ERROR_INVALID_CONTENT_TYPE.status)
+               response.json(messages.ERROR_INVALID_CONTENT_TYPE.message)
+            }
+         })
+
+         app.put('/v1/ayan/paciente/:id', cors(), bodyParserJSON, async (request, response) => {
+            let contentType = request.headers['content-type']
+
+            //Validação para receber dados apenas no formato JSON
+            if (String(contentType).toLowerCase() == 'application/json') {
+               
+               let id = request.params.id;
+
+               
+               let dadosBody = request.body
+
+               let resultDadosPaciente = await controllerPaciente.updatePaciente(dadosBody, id)
+
+               response.status(resultDadosPaciente.status)
+               response.json(resultDadosPaciente)
+            } else {
+               response.status(messages.ERROR_INVALID_CONTENT_TYPE.status)
+               response.json(messages.ERROR_INVALID_CONTENT_TYPE.message)
+            }
+         })
+
+         app.delete('/v1/ayan/paciente/:id', cors(), async function (request, response) {
+            let id = request.params.id;
+        
+            let returnPaciente = await controllerPaciente.getPacienteByID(id)
+        
+            if (returnPaciente.status == 404) {
+                response.status(returnPaciente.status)
+                response.json(returnPaciente)
+            } else {
+                let resultDadosPaciente = await controllerPaciente.deletePaciente(id)
+        
+                response.status(resultDadosPaciente.status)
+                response.json(resultDadosPaciente)
+            }
+        })
 
 
             /*************************************************************************************
