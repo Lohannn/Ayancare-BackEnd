@@ -59,8 +59,37 @@ const insertPaciente = async function (dadosPaciente) {
         '${dadosPaciente.email}',
         '${dadosPaciente.senha}',
         '${dadosPaciente.cpf}',
-        
         ${dadosPaciente.id_endereco_paciente},
         ${dadosPaciente.id_genero}
     )`
+    //talvez ID de endereco e de genero mudem de nome
+}
+
+const updatePaciente = async function (dadosPaciente) {
+    let sql = `update tbl_paciente set
+            nome = ${dadosPaciente.nome},
+            data_nascimento = ${dadosPaciente.data_nascimento},
+            email = ${dadosPaciente.email},
+            senha = ${dadosPaciente.senha}
+        where id = ${dadosPaciente.id}`
+
+    let resultStatus = await prisma.$executeRawUnsafe(sql)
+
+    if (resultStatus) {
+        return true
+    } else {
+        return false
+    }
+}
+
+const deletePaciente = async function (idPaciente) {
+    let sql = `delete from tbl_paciente where id = ${idPaciente}`
+
+    let resultStatus = await prisma.$executeRawUnsafe(sql)
+
+    if (resultStatus) {
+        return true
+    } else {
+        return false
+    }
 }
