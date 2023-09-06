@@ -8,7 +8,6 @@
 //Import do arquivo de configuração das variáveis, constantes e globais.
 const messages = require('./modules/config.js')
 
-//Import do arquivo DAO para acessar dados do aluno no BD
 const pacienteDAO = require('../model/DAO/pacienteDAO.js')
 
 const getPacientes = async function () {
