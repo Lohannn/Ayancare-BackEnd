@@ -19,7 +19,7 @@ const getPacientes = async function () {
         //Criando um JSON com o atributo Alunos para encaminhar um Array de alunos
         dadosPacientesJSON.status = messages.SUCCESS_REQUEST.status
         dadosPacientesJSON.quantidade = dadosPacientes.length
-        dadosPacientesJSON.alunos = dadosPacientes
+        dadosPacientesJSON.pacientes = dadosPacientes
         return dadosPacientesJSON
     } else {
         return messages.ERROR_INTERNAL_SERVER
