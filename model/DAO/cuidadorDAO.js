@@ -74,6 +74,8 @@ const insertCuidador = async function (dadosCuidador) {
         '${dadosCuidador.data_nascimento}',
         '${dadosCuidador.email}',
         '${dadosCuidador.senha}',
+        '${dadosCuidador.foto}',
+        '${dadosCuidador.descricao_experiencia}',
         ${dadosCuidador.id_endereco_cuidador},
         ${dadosCuidador.id_genero}
     )`
@@ -94,7 +96,9 @@ const updateCuidador = async function (dadosCuidador) {
             nome = '${dadosCuidador.nome}',
             data_nascimento = '${dadosCuidador.data_nascimento}',
             email = '${dadosCuidador.email}',
-            senha = '${dadosCuidador.senha}'
+            senha = '${dadosCuidador.senha}',
+            foto = '${dadosCuidador.foto}',
+            descricao_experiencia = '${dadosCuidador.descricao_experiencia}'
         where id = ${dadosCuidador.id}`
 
     let resultStatus = await prisma.$executeRawUnsafe(sql)
