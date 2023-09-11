@@ -5,6 +5,7 @@
 * Versão: 1.0
 **************************************************************************************************************/
 
+
 const express = require('express');
 const cors = require('cors')
 const bodyParser = require('body-parser')
@@ -56,13 +57,28 @@ app.use((request, response, next) => {
          * Data: 04/09/2023
          * Versão: 1.0
          *************************************************************************************/
-         app.get('/v1/ayan/pacientes', cors(), async (request, response) => {
-            //Recebe os dados do controller
-            let dadosPaciente = await controllerPaciente.getPacientes();
+         app.get('/v1/ayan/pacientes', cors(), bodyParserJSON, async (request, response) => {
+            let dadosBody = request.body
+            let contentType = request.headers['content-type']
 
-            //Valida se existe registro
-            response.json(dadosPaciente)
-            response.status(dadosPaciente.status)
+            if(dadosBody != undefined){
+               if (String(contentType).toLowerCase() == 'application/json') {
+                  let resultDadosPaciente = await controllerPaciente.getPacienteByEmailAndSenha(dadosBody)
+   
+                  response.status(resultDadosEndereco.status)
+                  response.json(resultDadosPaciente)
+               } else {
+                  response.status(messages.ERROR_INVALID_CONTENT_TYPE.status)
+                  response.json(messages.ERROR_INVALID_CONTENT_TYPE.message)
+               }
+            } else {
+               //Recebe os dados do controller
+               let dadosPaciente = await controllerPaciente.getPacientes();
+
+               //Valida se existe registro
+               response.json(dadosPaciente)
+               response.status(dadosPaciente.status)
+            }
          })
 
          app.get('/v1/ayan/paciente/:id', cors(), async (request, response) => {
@@ -334,12 +350,27 @@ app.use((request, response, next) => {
                                                                      * Versão: 1.0
                                                                      *************************************************************************************/
                                                                       app.get('/v1/ayan/cuidadores', cors(), async (request, response) => {
-                                                                        //Recebe os dados do controller
-                                                                        let dadosCuidador = await controllerCuidador.getCuidadores();
-                                                            
-                                                                        //Valida se existe registro
-                                                                        response.json(dadosCuidador)
-                                                                        response.status(dadosCuidador.status)
+                                                                        let dadosBody = request.body
+                                                                        let contentType = request.headers['content-type']
+
+                                                                        if(dadosBody != undefined){
+                                                                           if (String(contentType).toLowerCase() == 'application/json') {
+                                                                              let resultDadosCuidador = await controllerCuidador.getCuidadorByEmailAndSenha(dadosBody)
+                                                               
+                                                                              response.status(resultDadosEndereco.status)
+                                                                              response.json(resultDadosCuidador)
+                                                                           } else {
+                                                                              response.status(messages.ERROR_INVALID_CONTENT_TYPE.status)
+                                                                              response.json(messages.ERROR_INVALID_CONTENT_TYPE.message)
+                                                                           }
+                                                                        } else {
+                                                                           //Recebe os dados do controller
+                                                                           let dadosCuidador = await controllerCuidador.getCuidadores();
+                                                               
+                                                                           //Valida se existe registro
+                                                                           response.json(dadosCuidador)
+                                                                           response.status(dadosCuidador.status)
+                                                                        }
                                                                      })
                                                             
                                                                      app.get('/v1/ayan/cuidador/:id', cors(), async (request, response) => {

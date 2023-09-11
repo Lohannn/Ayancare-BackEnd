@@ -56,6 +56,18 @@ const selectLastId = async function () {
     //retorna o ultimo id inserido no banco de dados
 }
 
+const selectPacienteByEmailAndSenha = async function (dadosPaciente){
+    let sql = `select * from tbl_paciente where email = '${dadosPaciente.email} and senha = ${dadosPaciente.senha}'`
+
+    let rsPaciente = await prisma.$queryRawUnsafe(sql)
+
+    if (rsPaciente.length > 0) {
+        return rsPaciente
+    } else {
+        return false
+    }
+}
+
 /************************** Inserts ******************************/
 
 /****************************************************************************************
@@ -68,6 +80,8 @@ const insertPaciente = async function (dadosPaciente) {
         email,
         senha,
         cpf,
+        foto,
+        historico_medico,
         id_endereco_paciente,
         id_genero
     ) values (
@@ -76,6 +90,8 @@ const insertPaciente = async function (dadosPaciente) {
         '${dadosPaciente.email}',
         '${dadosPaciente.senha}',
         '${dadosPaciente.cpf}',
+        '${dadosPaciente.foto}',
+        '${dadosPaciente.historico_medico}',
         ${dadosPaciente.id_endereco_paciente},
         ${dadosPaciente.id_genero}
     )`
@@ -96,7 +112,10 @@ const updatePaciente = async function (dadosPaciente) {
             nome = '${dadosPaciente.nome}',
             data_nascimento = '${dadosPaciente.data_nascimento}',
             email = '${dadosPaciente.email}',
-            senha = '${dadosPaciente.senha}'
+            senha = '${dadosPaciente.senha}',
+            cpf = '${dadosPaciente.cpf}',
+            foto = '${dadosPaciente.foto}',
+            historico_medico = '${dadosPaciente.historico_medico}'
         where id = ${dadosPaciente.id}`
 
     let resultStatus = await prisma.$executeRawUnsafe(sql)
@@ -127,5 +146,6 @@ module.exports = {
     selectAllPacientes,
     selectLastId,
     selectPacienteById,
+    selectPacienteByEmailAndSenha,
     updatePaciente
 }

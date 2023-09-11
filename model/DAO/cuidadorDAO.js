@@ -56,6 +56,18 @@ const selectLastId = async function () {
     //retorna o ultimo id inserido no banco de dados
 }
 
+const selectCuidadorByEmailAndSenha = async function (dadosCuidador){
+    let sql = `select * from tbl_cuidador where email = '${dadosCuidador.email} and senha = ${dadosCuidador.senha}'`
+
+    let rsCuidador = await prisma.$queryRawUnsafe(sql)
+
+    if (rsCuidador.length > 0) {
+        return rsCuidador
+    } else {
+        return false
+    }
+}
+
 /************************** Inserts ******************************/
 
 /****************************************************************************************
@@ -129,5 +141,6 @@ module.exports = {
     selectAllCuidadores,
     selectLastId,
     selectCuidadorById,
+    selectCuidadorByEmailAndSenha,
     updateCuidador
 }

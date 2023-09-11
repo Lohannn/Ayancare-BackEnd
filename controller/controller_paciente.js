@@ -9,6 +9,7 @@
 const messages = require('./modules/config.js')
 
 const pacienteDAO = require('../model/DAO/pacienteDAO.js')
+const jwt = require('../middleware/middlewareJWT.js')
 
 const getPacientes = async function () {
     let dadosPacientesJSON = {}
@@ -39,6 +40,28 @@ const getPacienteByID = async function (id) {
         if (dadosPaciente) {
             dadosPacienteJSON.status = messages.SUCCESS_REQUEST.status
             dadosPacienteJSON.paciente = dadosPaciente
+            return dadosPacienteJSON
+        } else {
+            return messages.ERROR_NOT_FOUND
+        }
+    }
+}
+
+const getPacienteByEmailAndSenha = async function (dadosPaciente) {
+    if (dadosPaciente.email == '' || dadosPaciente.email == undefined ||
+        dadosPaciente.senha == '' || dadosPaciente.senha == undefined) {
+        return messages.ERROR_REQUIRED_FIELDS
+    } else {
+
+        let dadosPacienteJSON = {};
+
+        let rsPaciente = await pacienteDAO.selectPacienteByEmailAndSenha(dadosPaciente)
+
+        if (rsPaciente) {
+            let tokenUser = await jwt.createJWT(rsPaciente[0].id)
+
+            dadosPacienteJSON.status = messages.SUCCESS_REQUEST.status
+            dadosPacienteJSON.paciente = rsPaciente
             return dadosPacienteJSON
         } else {
             return messages.ERROR_NOT_FOUND
@@ -151,5 +174,6 @@ module.exports = {
     insertPaciente,
     updatePaciente,
     deletePaciente,
-    getPacienteByID
+    getPacienteByID,
+    getPacienteByEmailAndSenha
 }

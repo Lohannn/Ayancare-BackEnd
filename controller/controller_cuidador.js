@@ -46,6 +46,26 @@ const getCuidadorByID = async function (id) {
     }
 }
 
+const getCuidadorByEmailAndSenha = async function (dadosCuidador) {
+    if (dadosCuidador.email == '' || dadosCuidador.email == undefined ||
+        dadosCuidador.senha == '' || dadosCuidador.senha == undefined) {
+        return messages.ERROR_REQUIRED_FIELDS
+    } else {
+
+        let dadosCuidadorJSON = {};
+
+        let rsCuidador = await pacienteDAO.selectPacienteByEmailAndSenha(dadosCuidador)
+
+        if (rsCuidador) {
+            dadosCuidadorJSON.status = messages.SUCCESS_REQUEST.status
+            dadosCuidadorJSON.paciente = rsCuidador
+            return dadosCuidadorJSON
+        } else {
+            return messages.ERROR_NOT_FOUND
+        }
+    }
+}
+
 const insertCuidador = async function (dadosCuidador) {
 
     if (
@@ -141,5 +161,6 @@ module.exports = {
     insertCuidador,
     updateCuidador,
     deleteCuidador,
-    getCuidadorByID
+    getCuidadorByID,
+    getCuidadorByEmailAndSenha
 }
