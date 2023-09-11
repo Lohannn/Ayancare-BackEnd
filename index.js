@@ -12,6 +12,7 @@ const bodyParserJSON = bodyParser.json()
 
 const messages = require('./controller/modules/config.js')
 const controllerPaciente = require('./controller/controller_paciente.js');
+const controllerEndereco_Paciente = require('./controller/controller_enderecoPaciente.js');
 const { request } = require('express');
 const { response } = require('express');
 
@@ -55,6 +56,17 @@ app.use((request, response, next) => {
          app.get('/v1/ayan/pacientes', cors(), async (request, response) => {
             //Recebe os dados do controller
             let dadosPaciente = await controllerPaciente.getPacientes();
+
+            //Valida se existe registro
+            response.json(dadosPaciente)
+            response.status(dadosPaciente.status)
+         })
+
+         app.get('/v1/ayan/paciente/:id', cors(), async (request, response) => {
+            let idPaciente = request.params.id;
+            
+            //Recebe os dados do controller
+            let dadosPaciente = await controllerPaciente.getPacienteByID(idPaciente);
 
             //Valida se existe registro
             response.json(dadosPaciente)
@@ -114,193 +126,246 @@ app.use((request, response, next) => {
             }
         })
 
-
             /*************************************************************************************
-             * Objetibo: API de controle de Humor.
-             * Autor: Lohannes da Silva Costa
-             * Data: 04/09/2023
-             * Versão: 1.0
-             *************************************************************************************/
+            * Objetibo: API de controle de Endereço do Paciente.
+            * Autor: Lohannes da Silva Costa
+            * Data: 11/09/2023
+            * Versão: 1.0
+            *************************************************************************************/
+            app.post('/v1/ayan/paciente/endereco', cors(), bodyParserJSON, async (request, response) => {
+               let contentType = request.headers['content-type']
+   
+               //Validação para receber dados apenas no formato JSON
+               if (String(contentType).toLowerCase() == 'application/json') {
+                  let dadosBody = request.body
+                  let resultDadosEndereco = await controllerEndereco_Paciente.insertEndereco(dadosBody)
+   
+                  response.status(resultDadosEndereco.status)
+                  response.json(resultDadosEndereco)
+               } else {
+                  response.status(messages.ERROR_INVALID_CONTENT_TYPE.status)
+                  response.json(messages.ERROR_INVALID_CONTENT_TYPE.message)
+               }
+            })
+
+            app.get('/v1/ayan/paciente/endereco/:id', cors(), async (request, response) => {
+               let idEndereco = request.params.id;
+               
+               //Recebe os dados do controller
+               let dadosEndereco = await controllerEndereco_Paciente.getEnderecoByID(idEndereco);
+   
+               //Valida se existe registro
+               response.json(dadosEndereco)
+               response.status(dadosEndereco.status)
+            })
+   
+            app.put('/v1/ayan/paciente/endereco/:id', cors(), bodyParserJSON, async (request, response) => {
+               let contentType = request.headers['content-type']
+   
+               //Validação para receber dados apenas no formato JSON
+               if (String(contentType).toLowerCase() == 'application/json') {
+                  
+                  let id = request.params.id;
+   
+                  
+                  let dadosBody = request.body
+   
+                  let resultDadosEndereco = await controllerEndereco_Paciente.updateEndereco(dadosBody, id)
+   
+                  response.status(resultDadosEndereco.status)
+                  response.json(resultDadosEndereco)
+               } else {
+                  response.status(messages.ERROR_INVALID_CONTENT_TYPE.status)
+                  response.json(messages.ERROR_INVALID_CONTENT_TYPE.message)
+               }
+            })
+
+               /*************************************************************************************
+                * Objetibo: API de controle de Humor.
+                * Autor: Lohannes da Silva Costa
+                * Data: 04/09/2023
+                * Versão: 1.0
+                *************************************************************************************/
 
 
 
-                /*************************************************************************************
-                 * Objetibo: API de controle de Generos.
-                 * Autor: Lohannes da Silva Costa
-                 * Data: 04/09/2023
-                 * Versão: 1.0
-                 *************************************************************************************/
+                  /*************************************************************************************
+                   * Objetibo: API de controle de Generos.
+                   * Autor: Lohannes da Silva Costa
+                   * Data: 04/09/2023
+                   * Versão: 1.0
+                   *************************************************************************************/
 
 
 
-                    /*************************************************************************************
-                     * Objetibo: API de controle de Cidades.
-                     * Autor: Lohannes da Silva Costa
-                     * Data: 04/09/2023
-                     * Versão: 1.0
-                     *************************************************************************************/
+                     /*************************************************************************************
+                        * Objetibo: API de controle de Cidades.
+                        * Autor: Lohannes da Silva Costa
+                        * Data: 04/09/2023
+                        * Versão: 1.0
+                        *************************************************************************************/
 
 
 
-                        /*************************************************************************************
-                         * Objetibo: API de controle de Estados.
-                         * Autor: Lohannes da Silva Costa
-                         * Data: 04/09/2023
-                         * Versão: 1.0
-                         *************************************************************************************/
+                           /*************************************************************************************
+                            * Objetibo: API de controle de Estados.
+                            * Autor: Lohannes da Silva Costa
+                            * Data: 04/09/2023
+                            * Versão: 1.0
+                            *************************************************************************************/
 
 
 
-                            /*************************************************************************************
-                             * Objetibo: API de controle de Sintomas.
-                             * Autor: Lohannes da Silva Costa
-                             * Data: 04/09/2023
-                             * Versão: 1.0
-                             *************************************************************************************/
+                              /*************************************************************************************
+                               * Objetibo: API de controle de Sintomas.
+                               * Autor: Lohannes da Silva Costa
+                               * Data: 04/09/2023
+                               * Versão: 1.0
+                               *************************************************************************************/
 
 
 
-                                /*************************************************************************************
-                                 * Objetibo: API de controle de Exercícios.
-                                 * Autor: Lohannes da Silva Costa
-                                 * Data: 04/09/2023
-                                 * Versão: 1.0
-                                 *************************************************************************************/
+                                 /*************************************************************************************
+                                    * Objetibo: API de controle de Exercícios.
+                                    * Autor: Lohannes da Silva Costa
+                                    * Data: 04/09/2023
+                                    * Versão: 1.0
+                                    *************************************************************************************/
 
 
 
-                                    /*************************************************************************************
-                                     * Objetibo: API de controle de Respostas de Humor.
-                                     * Autor: Lohannes da Silva Costa
-                                     * Data: 04/09/2023
-                                     * Versão: 1.0
-                                     *************************************************************************************/
+                                       /*************************************************************************************
+                                        * Objetibo: API de controle de Respostas de Humor.
+                                        * Autor: Lohannes da Silva Costa
+                                        * Data: 04/09/2023
+                                        * Versão: 1.0
+                                        *************************************************************************************/
 
 
 
-                                        /*************************************************************************************
-                                         * Objetibo: API de controle de Contato.
-                                         * Autor: Lohannes da Silva Costa
-                                         * Data: 04/09/2023
-                                         * Versão: 1.0
-                                         *************************************************************************************/
+                                          /*************************************************************************************
+                                           * Objetibo: API de controle de Contato.
+                                           * Autor: Lohannes da Silva Costa
+                                           * Data: 04/09/2023
+                                           * Versão: 1.0
+                                           *************************************************************************************/
 
 
 
-                                            /*************************************************************************************
-                                             * Objetibo: API de controle de Responsável.
-                                             * Autor: Lohannes da Silva Costa
-                                             * Data: 04/09/2023
-                                             * Versão: 1.0
-                                             *************************************************************************************/
+                                             /*************************************************************************************
+                                                * Objetibo: API de controle de Responsável.
+                                                * Autor: Lohannes da Silva Costa
+                                                * Data: 04/09/2023
+                                                * Versão: 1.0
+                                                *************************************************************************************/
 
 
 
-                                                /*************************************************************************************
-                                                 * Objetibo: API de Tipos de Telefone.
-                                                 * Autor: Lohannes da Silva Costa
-                                                 * Data: 04/09/2023
-                                                 * Versão: 1.0
-                                                 *************************************************************************************/
+                                                   /*************************************************************************************
+                                                    * Objetibo: API de Tipos de Telefone.
+                                                    * Autor: Lohannes da Silva Costa
+                                                    * Data: 04/09/2023
+                                                    * Versão: 1.0
+                                                    *************************************************************************************/
 
 
 
-                                                    /*************************************************************************************
-                                                     * Objetibo: API de controle de Medidas.
-                                                     * Autor: Lohannes da Silva Costa
-                                                     * Data: 04/09/2023
-                                                     * Versão: 1.0
-                                                     *************************************************************************************/
+                                                      /*************************************************************************************
+                                                       * Objetibo: API de controle de Medidas.
+                                                       * Autor: Lohannes da Silva Costa
+                                                       * Data: 04/09/2023
+                                                       * Versão: 1.0
+                                                       *************************************************************************************/
 
 
 
-                                                        /*************************************************************************************
-                                                         * Objetibo: API de controle de Medicamentos.
-                                                         * Autor: Lohannes da Silva Costa
-                                                         * Data: 04/09/2023
-                                                         * Versão: 1.0
-                                                         *************************************************************************************/
+                                                         /*************************************************************************************
+                                                            * Objetibo: API de controle de Medicamentos.
+                                                            * Autor: Lohannes da Silva Costa
+                                                            * Data: 04/09/2023
+                                                            * Versão: 1.0
+                                                            *************************************************************************************/
 
 
 
-                                                            /*************************************************************************************
-                                                             * Objetibo: API de controle de Tipos de Eventos.
-                                                             * Autor: Lohannes da Silva Costa
-                                                             * Data: 04/09/2023
-                                                             * Versão: 1.0
-                                                             *************************************************************************************/
+                                                               /*************************************************************************************
+                                                                * Objetibo: API de controle de Tipos de Eventos.
+                                                                * Autor: Lohannes da Silva Costa
+                                                                * Data: 04/09/2023
+                                                                * Versão: 1.0
+                                                                *************************************************************************************/
 
 
 
-                                                                /*************************************************************************************
-                                                                 * Objetibo: API de controle de Eventos.
-                                                                 * Autor: Lohannes da Silva Costa
-                                                                 * Data: 04/09/2023
-                                                                 * Versão: 1.0
-                                                                 *************************************************************************************/
+                                                                  /*************************************************************************************
+                                                                   * Objetibo: API de controle de Eventos.
+                                                                   * Autor: Lohannes da Silva Costa
+                                                                   * Data: 04/09/2023
+                                                                   * Versão: 1.0
+                                                                   *************************************************************************************/
 
 
 
-                                                                    /*************************************************************************************
-                                                                     * Objetibo: API de controle de Cuidadores.
-                                                                     * Autor: Lohannes da Silva Costa
-                                                                     * Data: 04/09/2023
-                                                                     * Versão: 1.0
-                                                                     *************************************************************************************/
+                                                                     /*************************************************************************************
+                                                                        * Objetibo: API de controle de Cuidadores.
+                                                                        * Autor: Lohannes da Silva Costa
+                                                                        * Data: 04/09/2023
+                                                                        * Versão: 1.0
+                                                                        *************************************************************************************/
 
 
 
-                                                                        /*************************************************************************************
-                                                                         * Objetibo: API de controle de Turnos.
-                                                                         * Autor: Lohannes da Silva Costa
-                                                                         * Data: 04/09/2023
-                                                                         * Versão: 1.0
-                                                                         *************************************************************************************/
+                                                                           /*************************************************************************************
+                                                                            * Objetibo: API de controle de Turnos.
+                                                                            * Autor: Lohannes da Silva Costa
+                                                                            * Data: 04/09/2023
+                                                                            * Versão: 1.0
+                                                                            *************************************************************************************/
 
 
 
-                                                                            /*************************************************************************************
-                                                                             * Objetibo: API de controle de Dias.
-                                                                             * Autor: Lohannes da Silva Costa
-                                                                             * Data: 04/09/2023
-                                                                             * Versão: 1.0
-                                                                             *************************************************************************************/
+                                                                              /*************************************************************************************
+                                                                               * Objetibo: API de controle de Dias.
+                                                                               * Autor: Lohannes da Silva Costa
+                                                                               * Data: 04/09/2023
+                                                                               * Versão: 1.0
+                                                                               *************************************************************************************/
 
 
 
-                                                                                /*************************************************************************************
-                                                                                 * Objetibo: API de controle de Horas.
-                                                                                 * Autor: Lohannes da Silva Costa
-                                                                                 * Data: 04/09/2023
-                                                                                 * Versão: 1.0
-                                                                                 *************************************************************************************/
+                                                                                 /*************************************************************************************
+                                                                                    * Objetibo: API de controle de Horas.
+                                                                                    * Autor: Lohannes da Silva Costa
+                                                                                    * Data: 04/09/2023
+                                                                                    * Versão: 1.0
+                                                                                    *************************************************************************************/
 
 
 
-                                                                                    /*************************************************************************************
-                                                                                     * Objetibo: API de controle de Relatórios.
-                                                                                     * Autor: Lohannes da Silva Costa
-                                                                                     * Data: 04/09/2023
-                                                                                     * Versão: 1.0
-                                                                                     *************************************************************************************/
+                                                                                       /*************************************************************************************
+                                                                                        * Objetibo: API de controle de Relatórios.
+                                                                                        * Autor: Lohannes da Silva Costa
+                                                                                        * Data: 04/09/2023
+                                                                                        * Versão: 1.0
+                                                                                        *************************************************************************************/
 
 
 
-                                                                                        /*************************************************************************************
-                                                                                         * Objetibo: API de controle de Respostas do Relatório.
-                                                                                         * Autor: Lohannes da Silva Costa
-                                                                                         * Data: 04/09/2023
-                                                                                         * Versão: 1.0
-                                                                                         *************************************************************************************/
+                                                                                          /*************************************************************************************
+                                                                                           * Objetibo: API de controle de Respostas do Relatório.
+                                                                                           * Autor: Lohannes da Silva Costa
+                                                                                           * Data: 04/09/2023
+                                                                                           * Versão: 1.0
+                                                                                           *************************************************************************************/
 
 
 
-                                                                                            /*************************************************************************************
-                                                                                             * Objetibo: API de controle de Perguntas do Relatório.
-                                                                                             * Autor: Lohannes da Silva Costa
-                                                                                             * Data: 04/09/2023
-                                                                                             * Versão: 1.0
-                                                                                             *************************************************************************************/
+                                                                                             /*************************************************************************************
+                                                                                                * Objetibo: API de controle de Perguntas do Relatório.
+                                                                                                * Autor: Lohannes da Silva Costa
+                                                                                                * Data: 04/09/2023
+                                                                                                * Versão: 1.0
+                                                                                                *************************************************************************************/
                                                                                             
 
                                                                                             
