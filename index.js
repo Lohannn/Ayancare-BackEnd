@@ -12,7 +12,9 @@ const bodyParserJSON = bodyParser.json()
 
 const messages = require('./controller/modules/config.js')
 const controllerPaciente = require('./controller/controller_paciente.js');
+const controllerCuidador = require('./controller/controller_cuidador.js');
 const controllerEndereco_Paciente = require('./controller/controller_enderecoPaciente.js');
+const controllerEndereco_Cuidador = require('./controller/controller_enderecoCuidador.js');
 const { request } = require('express');
 const { response } = require('express');
 
@@ -307,12 +309,138 @@ app.use((request, response, next) => {
 
 
                                                                      /*************************************************************************************
-                                                                        * Objetibo: API de controle de Cuidadores.
+                                                                     * Objetibo: API de controle de Cuidadores.
+                                                                     * Autor: Lohannes da Silva Costa
+                                                                     * Data: 04/09/2023
+                                                                     * Versão: 1.0
+                                                                     *************************************************************************************/
+                                                                      app.get('/v1/ayan/cuidadores', cors(), async (request, response) => {
+                                                                        //Recebe os dados do controller
+                                                                        let dadosCuidador = await controllerCuidador.getCuidadores();
+                                                            
+                                                                        //Valida se existe registro
+                                                                        response.json(dadosCuidador)
+                                                                        response.status(dadosCuidador.status)
+                                                                     })
+                                                            
+                                                                     app.get('/v1/ayan/cuidador/:id', cors(), async (request, response) => {
+                                                                        let idCuidador = request.params.id;
+                                                                        
+                                                                        //Recebe os dados do controller
+                                                                        let dadosCuidador = await controllerCuidador.getCuidadorByID(idCuidador);
+                                                            
+                                                                        //Valida se existe registro
+                                                                        response.json(dadosCuidador)
+                                                                        response.status(dadosCuidador.status)
+                                                                     })
+                                                            
+                                                                     app.post('/v1/ayan/cuidador', cors(), bodyParserJSON, async (request, response) => {
+                                                                        let contentType = request.headers['content-type']
+                                                            
+                                                                        //Validação para receber dados apenas no formato JSON
+                                                                        if (String(contentType).toLowerCase() == 'application/json') {
+                                                                           let dadosBody = request.body
+                                                                           let resultDadosCuidador = await controllerCuidador.insertCuidador(dadosBody)
+                                                            
+                                                                           response.status(resultDadosCuidador.status)
+                                                                           response.json(resultDadosCuidador)
+                                                                        } else {
+                                                                           response.status(messages.ERROR_INVALID_CONTENT_TYPE.status)
+                                                                           response.json(messages.ERROR_INVALID_CONTENT_TYPE.message)
+                                                                        }
+                                                                     })
+                                                            
+                                                                     app.put('/v1/ayan/cuidador/:id', cors(), bodyParserJSON, async (request, response) => {
+                                                                        let contentType = request.headers['content-type']
+                                                            
+                                                                        //Validação para receber dados apenas no formato JSON
+                                                                        if (String(contentType).toLowerCase() == 'application/json') {
+                                                                           
+                                                                           let id = request.params.id;
+                                                            
+                                                                           
+                                                                           let dadosBody = request.body
+                                                            
+                                                                           let resultDadosCuidador = await controllerCuidador.updateCuidador(dadosBody, id)
+                                                            
+                                                                           response.status(resultDadosCuidador.status)
+                                                                           response.json(resultDadosCuidador)
+                                                                        } else {
+                                                                           response.status(messages.ERROR_INVALID_CONTENT_TYPE.status)
+                                                                           response.json(messages.ERROR_INVALID_CONTENT_TYPE.message)
+                                                                        }
+                                                                     })
+                                                            
+                                                                     app.delete('/v1/ayan/cuidador/:id', cors(), async function (request, response) {
+                                                                        let id = request.params.id;
+                                                                    
+                                                                        let returnCuidador = await controllerCuidador.getCuidadorByID(id)
+                                                                    
+                                                                        if (returnPaciente.status == 404) {
+                                                                            response.status(returnCuidador.status)
+                                                                            response.json(returnCuidador)
+                                                                        } else {
+                                                                            let resultDadosCuidador = await controllerCuidador.deleteCuidador(id)
+                                                                    
+                                                                            response.status(resultDadosCuidador.status)
+                                                                            response.json(resultDadosCuidador)
+                                                                        }
+                                                                    })
+
+
+                                                                        /*************************************************************************************
+                                                                        * Objetibo: API de controle de Endereco de Cuidadores.
                                                                         * Autor: Lohannes da Silva Costa
-                                                                        * Data: 04/09/2023
+                                                                        * Data: 11/09/2023
                                                                         * Versão: 1.0
                                                                         *************************************************************************************/
-
+                                                                         app.post('/v1/ayan/cuidador/endereco', cors(), bodyParserJSON, async (request, response) => {
+                                                                           let contentType = request.headers['content-type']
+                                                               
+                                                                           //Validação para receber dados apenas no formato JSON
+                                                                           if (String(contentType).toLowerCase() == 'application/json') {
+                                                                              let dadosBody = request.body
+                                                                              let resultDadosEndereco = await controllerEndereco_Cuidador.insertEndereco(dadosBody)
+                                                               
+                                                                              response.status(resultDadosEndereco.status)
+                                                                              response.json(resultDadosEndereco)
+                                                                           } else {
+                                                                              response.status(messages.ERROR_INVALID_CONTENT_TYPE.status)
+                                                                              response.json(messages.ERROR_INVALID_CONTENT_TYPE.message)
+                                                                           }
+                                                                        })
+                                                            
+                                                                        app.get('/v1/ayan/cuidador/endereco/:id', cors(), async (request, response) => {
+                                                                           let idEndereco = request.params.id;
+                                                                           
+                                                                           //Recebe os dados do controller
+                                                                           let dadosEndereco = await controllerEndereco_Cuidador.getEnderecoByID(idEndereco);
+                                                               
+                                                                           //Valida se existe registro
+                                                                           response.json(dadosEndereco)
+                                                                           response.status(dadosEndereco.status)
+                                                                        })
+                                                               
+                                                                        app.put('/v1/ayan/cuidador/endereco/:id', cors(), bodyParserJSON, async (request, response) => {
+                                                                           let contentType = request.headers['content-type']
+                                                               
+                                                                           //Validação para receber dados apenas no formato JSON
+                                                                           if (String(contentType).toLowerCase() == 'application/json') {
+                                                                              
+                                                                              let id = request.params.id;
+                                                               
+                                                                              
+                                                                              let dadosBody = request.body
+                                                               
+                                                                              let resultDadosEndereco = await controllerEndereco_Cuidador.updateEndereco(dadosBody, id)
+                                                               
+                                                                              response.status(resultDadosEndereco.status)
+                                                                              response.json(resultDadosEndereco)
+                                                                           } else {
+                                                                              response.status(messages.ERROR_INVALID_CONTENT_TYPE.status)
+                                                                              response.json(messages.ERROR_INVALID_CONTENT_TYPE.message)
+                                                                           }
+                                                                        })
 
 
                                                                            /*************************************************************************************
