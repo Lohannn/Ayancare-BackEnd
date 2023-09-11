@@ -13,6 +13,7 @@ const bodyParserJSON = bodyParser.json()
 const messages = require('./controller/modules/config.js')
 const controllerPaciente = require('./controller/controller_paciente.js');
 const controllerCuidador = require('./controller/controller_cuidador.js');
+const controllerGenero = require('./controller/controller_genero.js');
 const controllerEndereco_Paciente = require('./controller/controller_enderecoPaciente.js');
 const controllerEndereco_Cuidador = require('./controller/controller_enderecoCuidador.js');
 const { request } = require('express');
@@ -189,7 +190,7 @@ app.use((request, response, next) => {
                 * Versão: 1.0
                 *************************************************************************************/
 
-
+                
 
                   /*************************************************************************************
                    * Objetibo: API de controle de Generos.
@@ -197,8 +198,26 @@ app.use((request, response, next) => {
                    * Data: 04/09/2023
                    * Versão: 1.0
                    *************************************************************************************/
-
-
+                   
+                   app.get('/v1/ayan/generos', cors(), async (request, response) => {
+                     //Recebe os dados do controller
+                     let dadosGenero = await controllerGenero.getGeneros();
+         
+                     //Valida se existe registro
+                     response.json(dadosGenero)
+                     response.status(dadosGenero.status)
+                  })
+         
+                  app.get('/v1/ayan/genero/:id', cors(), async (request, response) => {
+                     let idGenero = request.params.id;
+                     
+                     //Recebe os dados do controller
+                     let dadosGenero = await controllerGenero.getGeneroByID(idGenero);
+         
+                     //Valida se existe registro
+                     response.json(dadosGenero)
+                     response.status(dadosGenero.status)
+                  })
 
                      /*************************************************************************************
                         * Objetibo: API de controle de Cidades.

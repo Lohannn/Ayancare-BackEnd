@@ -12,7 +12,7 @@ var { PrismaClient } = require('@prisma/client');
 var prisma = new PrismaClient()
 
 /************************** Selects ******************************/
-const selectAllPacientes = async function () {
+const selectAllGeneros = async function () {
 
     //scriptSQL para buscar todos os itens do BD
     let sql = 'SELECT * FROM tbl_genero'
@@ -30,7 +30,7 @@ const selectAllPacientes = async function () {
 
 }
 
-const selectPacienteById = async function (idGenero) {
+const selectGeneroById = async function (idGenero) {
     let sql = `SELECT * FROM tbl_genero where id = ${idGenero}`
 
     let rsGenero = await prisma.$queryRawUnsafe(sql)
@@ -43,6 +43,6 @@ const selectPacienteById = async function (idGenero) {
 }
 
 module.exports = {
-    selectAllPacientes,
-    selectPacienteById
+    selectAllGeneros,
+    selectGeneroById
 }
