@@ -95,7 +95,7 @@ const validateJWT = async function (request, response, next){
             }
          })
 
-         app.get('/v1/ayan/paciente/:id', cors(), async (request, response) => {
+         app.get('/v1/ayan/paciente/:id', validateJWT, cors(), async (request, response) => {
             let idPaciente = request.params.id;
             
             //Recebe os dados do controller
