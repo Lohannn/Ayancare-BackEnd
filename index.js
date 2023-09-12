@@ -5,7 +5,6 @@
 * Versão: 1.0
 **************************************************************************************************************/
 
-
 const express = require('express');
 const cors = require('cors')
 const bodyParser = require('body-parser')
@@ -32,9 +31,23 @@ app.use((request, response, next) => {
     next()
 })
 
+const validateJWT = async function (request, response, next){
+   let token = request.headers['x-access-token']
+
+   const jwt = require('./middleware/middlewareJWT.js')
+
+   const autenticidadeToken = await jwt.validateJWT(token)
+
+   if(autenticidadeToken){
+      next();
+   } else {
+      return response.status(messages.ERROR_UNAUTHORIZED_USER.status).end();
+   }
+}
+
 //CRUD (Create, Read, Update, Delete)
 /*************************************************************************************
- * Objetibo: API de controle de Doenças Crônicas.
+ * Objetibo: API de controle de Doenças Crônicas. 
  * Autor: Lohannes da Silva Costa
  * Data: 04/09/2023
  * Versão: 1.0
@@ -57,31 +70,32 @@ app.use((request, response, next) => {
          * Data: 04/09/2023
          * Versão: 1.0
          *************************************************************************************/
-         app.get('/v1/ayan/pacientes', cors(), bodyParserJSON, async (request, response) => {
-            let dadosBody = request.body
-            let contentType = request.headers['content-type']
-
-            if(dadosBody != undefined){
-               if (String(contentType).toLowerCase() == 'application/json') {
-                  let resultDadosPaciente = await controllerPaciente.getPacienteByEmailAndSenha(dadosBody)
-   
-                  response.status(resultDadosEndereco.status)
-                  response.json(resultDadosPaciente)
-               } else {
-                  response.status(messages.ERROR_INVALID_CONTENT_TYPE.status)
-                  response.json(messages.ERROR_INVALID_CONTENT_TYPE.message)
-               }
-            } else {
+         app.get('/v1/ayan/pacientes', validateJWT, cors(), async (request, response) => {
                //Recebe os dados do controller
                let dadosPaciente = await controllerPaciente.getPacientes();
 
                //Valida se existe registro
                response.json(dadosPaciente)
                response.status(dadosPaciente.status)
+         })
+
+         app.get('/v1/ayan/paciente/autenticar', cors(), bodyParserJSON, async (request, response) => {
+            let contentType = request.headers['content-type']
+
+            //Validação para receber dados apenas no formato JSON
+            if (String(contentType).toLowerCase() == 'application/json') {
+               let dadosBody = request.body
+               let resultDadosPaciente = await controllerPaciente.getPacienteByEmailAndSenha(dadosBody)
+
+               response.status(resultDadosPaciente.status)
+               response.json(resultDadosPaciente)
+            } else {
+               response.status(messages.ERROR_INVALID_CONTENT_TYPE.status)
+               response.json(messages.ERROR_INVALID_CONTENT_TYPE.message)
             }
          })
 
-         app.get('/v1/ayan/paciente/:id', cors(), async (request, response) => {
+         app.get('/v1/ayan/paciente/:id', validateJWT, cors(), async (request, response) => {
             let idPaciente = request.params.id;
             
             //Recebe os dados do controller
@@ -92,7 +106,7 @@ app.use((request, response, next) => {
             response.status(dadosPaciente.status)
          })
 
-         app.post('/v1/ayan/paciente', cors(), bodyParserJSON, async (request, response) => {
+         app.post('/v1/ayan/paciente', validateJWT, cors(), bodyParserJSON, async (request, response) => {
             let contentType = request.headers['content-type']
 
             //Validação para receber dados apenas no formato JSON
@@ -108,7 +122,7 @@ app.use((request, response, next) => {
             }
          })
 
-         app.put('/v1/ayan/paciente/:id', cors(), bodyParserJSON, async (request, response) => {
+         app.put('/v1/ayan/paciente/:id', validateJWT, cors(), bodyParserJSON, async (request, response) => {
             let contentType = request.headers['content-type']
 
             //Validação para receber dados apenas no formato JSON
@@ -129,7 +143,7 @@ app.use((request, response, next) => {
             }
          })
 
-         app.delete('/v1/ayan/paciente/:id', cors(), async function (request, response) {
+         app.delete('/v1/ayan/paciente/:id', validateJWT, cors(), async function (request, response) {
             let id = request.params.id;
         
             let returnPaciente = await controllerPaciente.getPacienteByID(id)

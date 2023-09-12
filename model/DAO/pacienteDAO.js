@@ -57,7 +57,7 @@ const selectLastId = async function () {
 }
 
 const selectPacienteByEmailAndSenha = async function (dadosPaciente){
-    let sql = `select * from tbl_paciente where email = '${dadosPaciente.email} and senha = ${dadosPaciente.senha}'`
+    let sql = `select * from tbl_paciente where email = '${dadosPaciente.email}' and senha = '${dadosPaciente.senha}'`
 
     let rsPaciente = await prisma.$queryRawUnsafe(sql)
 

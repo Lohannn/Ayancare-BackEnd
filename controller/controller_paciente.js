@@ -60,6 +60,7 @@ const getPacienteByEmailAndSenha = async function (dadosPaciente) {
         if (rsPaciente) {
             let tokenUser = await jwt.createJWT(rsPaciente[0].id)
 
+            dadosPacienteJSON.token = tokenUser
             dadosPacienteJSON.status = messages.SUCCESS_REQUEST.status
             dadosPacienteJSON.paciente = rsPaciente
             return dadosPacienteJSON

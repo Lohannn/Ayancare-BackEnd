@@ -9,6 +9,7 @@
 const ERROR_INTERNAL_SERVER = { status: 500, message: 'Devido a um erro interno do servidor, não foi possível processar a requisição.' }
 const ERROR_REQUIRED_FIELDS = { status: 400, message: 'Campos obrigatórios não foram preenchidos ou foram preenchidos incorretamente.' }
 const ERROR_INVALID_ID = { status: 400, message: 'O ID informado não é válido ou não foi encaminhado.' }
+const ERROR_UNAUTHORIZED_USER = { status: 401, message: 'Usuário não autorizado a fazer requisições.' }
 const ERROR_NOT_FOUND = { status: 404, message: 'O Item não foi encontrado.' }
 const ERROR_INVALID_CONTENT_TYPE = { status: 415, message: 'O tipo de mídia Content-Type da solicitação não é compatível com o servidor. Tipo Aceito: [application/json]' }
 
@@ -29,5 +30,6 @@ module.exports = {
     SUCCESS_DELETED_ITEM,
     SUCCESS_ITEM_FOUND,
     SUCCESS_REQUEST,
-    SUCCESS_UPDATED_ITEM
+    SUCCESS_UPDATED_ITEM,
+    ERROR_UNAUTHORIZED_USER
 }
