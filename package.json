@@ -12,6 +12,6 @@
     "nodemon": "^3.0.1"
   },
   "scripts": {
-    "start": "npm run nodemon index.js"
+    "start": "npx nodemon index.js"
   }
 }
