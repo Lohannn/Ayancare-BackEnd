@@ -16,16 +16,18 @@ const createJWT = async function (payLoad){
 }
 
 const validateJWT = async function (token){
-    console.log(token);
-    let status = false;
+    let status;
 
     jwt.verify(token, SECRET, async function (err, decode){
-        if(!err){
+
+        console.log(err);
+        if(err){
             status = true;
+        } else {
+            status = false;
         }
 
         console.log(status);
-
         return status;
     })
 }

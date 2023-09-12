@@ -37,6 +37,7 @@ const validateJWT = async function (request, response, next){
    const jwt = require('./middleware/middlewareJWT.js')
 
    const autenticidadeToken = await jwt.validateJWT(token)
+   console.log(autenticidadeToken);
 
    if(autenticidadeToken){
       next();
