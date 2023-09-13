@@ -107,7 +107,7 @@ const validateJWT = async function (request, response, next){
             response.status(dadosPaciente.status)
          })
 
-         app.post('/v1/ayan/paciente', validateJWT, cors(), bodyParserJSON, async (request, response) => {
+         app.post('/v1/ayan/paciente', cors(), bodyParserJSON, async (request, response) => {
             let contentType = request.headers['content-type']
 
             //Validação para receber dados apenas no formato JSON
@@ -182,7 +182,7 @@ const validateJWT = async function (request, response, next){
                }
             })
 
-            app.get('/v1/ayan/paciente/endereco/:id', cors(), async (request, response) => {
+            app.get('/v1/ayan/paciente/endereco/:id',  validateJWT, cors(), async (request, response) => {
                let idEndereco = request.params.id;
                
                //Recebe os dados do controller
@@ -364,31 +364,33 @@ const validateJWT = async function (request, response, next){
                                                                      * Data: 04/09/2023
                                                                      * Versão: 1.0
                                                                      *************************************************************************************/
-                                                                      app.get('/v1/ayan/cuidadores', cors(), async (request, response) => {
-                                                                        let dadosBody = request.body
-                                                                        let contentType = request.headers['content-type']
-
-                                                                        if(dadosBody != undefined){
-                                                                           if (String(contentType).toLowerCase() == 'application/json') {
-                                                                              let resultDadosCuidador = await controllerCuidador.getCuidadorByEmailAndSenha(dadosBody)
-                                                               
-                                                                              response.status(resultDadosEndereco.status)
-                                                                              response.json(resultDadosCuidador)
-                                                                           } else {
-                                                                              response.status(messages.ERROR_INVALID_CONTENT_TYPE.status)
-                                                                              response.json(messages.ERROR_INVALID_CONTENT_TYPE.message)
-                                                                           }
-                                                                        } else {
+                                                                      app.get('/v1/ayan/cuidadores', validateJWT, cors(), async (request, response) => {
                                                                            //Recebe os dados do controller
                                                                            let dadosCuidador = await controllerCuidador.getCuidadores();
                                                                
                                                                            //Valida se existe registro
                                                                            response.json(dadosCuidador)
                                                                            response.status(dadosCuidador.status)
+                                                                     })
+
+                                                                     app.get('/v1/ayan/cuidador/autenticar', cors(), bodyParserJSON, async (request, response) => {
+                                                                        let contentType = request.headers['content-type']
+                                                            
+                                                                        //Validação para receber dados apenas no formato JSON
+                                                                        if (String(contentType).toLowerCase() == 'application/json') {
+                                                                           let dadosBody = request.body
+                                                                           let resultDadosCuidador = await controllerCuidador.getCuidadorByEmailAndSenha(dadosBody)
+                                                            
+                                                                           response.status(resultDadosCuidador.status)
+                                                                           response.json(resultDadosCuidador)
+                                                                        } else {
+                                                                           response.status(messages.ERROR_INVALID_CONTENT_TYPE.status)
+                                                                           response.json(messages.ERROR_INVALID_CONTENT_TYPE.message)
                                                                         }
                                                                      })
                                                             
-                                                                     app.get('/v1/ayan/cuidador/:id', cors(), async (request, response) => {
+                                                            
+                                                                     app.get('/v1/ayan/cuidador/:id', validateJWT, cors(), async (request, response) => {
                                                                         let idCuidador = request.params.id;
                                                                         
                                                                         //Recebe os dados do controller
@@ -415,7 +417,7 @@ const validateJWT = async function (request, response, next){
                                                                         }
                                                                      })
                                                             
-                                                                     app.put('/v1/ayan/cuidador/:id', cors(), bodyParserJSON, async (request, response) => {
+                                                                     app.put('/v1/ayan/cuidador/:id', validateJWT, cors(), bodyParserJSON, async (request, response) => {
                                                                         let contentType = request.headers['content-type']
                                                             
                                                                         //Validação para receber dados apenas no formato JSON
@@ -436,7 +438,7 @@ const validateJWT = async function (request, response, next){
                                                                         }
                                                                      })
                                                             
-                                                                     app.delete('/v1/ayan/cuidador/:id', cors(), async function (request, response) {
+                                                                     app.delete('/v1/ayan/cuidador/:id', validateJWT, cors(), async function (request, response) {
                                                                         let id = request.params.id;
                                                                     
                                                                         let returnCuidador = await controllerCuidador.getCuidadorByID(id)
@@ -486,7 +488,7 @@ const validateJWT = async function (request, response, next){
                                                                            response.status(dadosEndereco.status)
                                                                         })
                                                                
-                                                                        app.put('/v1/ayan/cuidador/endereco/:id', cors(), bodyParserJSON, async (request, response) => {
+                                                                        app.put('/v1/ayan/cuidador/endereco/:id', validateJWT, cors(), bodyParserJSON, async (request, response) => {
                                                                            let contentType = request.headers['content-type']
                                                                
                                                                            //Validação para receber dados apenas no formato JSON

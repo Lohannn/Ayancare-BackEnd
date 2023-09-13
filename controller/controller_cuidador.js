@@ -57,6 +57,9 @@ const getCuidadorByEmailAndSenha = async function (dadosCuidador) {
         let rsCuidador = await pacienteDAO.selectPacienteByEmailAndSenha(dadosCuidador)
 
         if (rsCuidador) {
+            let tokenUser = await jwt.createJWT(rsCuidador[0].id)
+
+            dadosCuidadorJSON.token = tokenUser
             dadosCuidadorJSON.status = messages.SUCCESS_REQUEST.status
             dadosCuidadorJSON.paciente = rsCuidador
             return dadosCuidadorJSON
@@ -84,6 +87,10 @@ const insertCuidador = async function (dadosCuidador) {
             let novoCuidador = await cuidadorDAO.selectLastId()
 
             let dadosCuidadorJSON = {}
+
+            let tokenUser = await jwt.createJWT(novoCuidador[0].id)
+
+            dadosCuidadorJSON.token = tokenUser
             dadosCuidadorJSON.status = messages.SUCCESS_CREATED_ITEM.status
             dadosCuidadorJSON.cuidador = novoCuidador
 
@@ -150,8 +157,6 @@ const deleteCuidador = async function (id) {
         } else{
             return messages.ERROR_INVALID_ID
         }
-
-
     }
 
 }

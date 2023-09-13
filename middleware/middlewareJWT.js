@@ -21,15 +21,14 @@ const validateJWT = async function (token){
     jwt.verify(token, SECRET, async function (err, decode){
 
         console.log(err);
-        if(err){
+        if(!err){
             status = true;
         } else {
             status = false;
         }
-
-        console.log(status);
-        return status;
     })
+
+    return status;
 }
 
 module.exports = {

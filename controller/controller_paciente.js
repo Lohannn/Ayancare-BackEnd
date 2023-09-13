@@ -97,6 +97,9 @@ const insertPaciente = async function (dadosPaciente) {
             let novoPaciente = await pacienteDAO.selectLastId()
 
             let dadosPacienteJSON = {}
+            let tokenUser = await jwt.createJWT(novoPaciente[0].id)
+
+            dadosPacienteJSON.token = tokenUser
             dadosPacienteJSON.status = messages.SUCCESS_CREATED_ITEM.status
             dadosPacienteJSON.paciente = novoPaciente
 
